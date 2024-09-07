@@ -10,7 +10,7 @@ bool hit_sphere(const Point3& center, double radius, const Ray& r)
     Vector3 oc = center - r.origin();
     double a = dot(r.direction(), r.direction());
     double b = -2.0 * dot(r.direction(), oc);
-    double c = dot(oc, oc); - radius * radius;
+    double c = dot(oc, oc) - radius * radius;
     double discriminant = b*b - 4*a*c;
     return (discriminant >= 0);
 }
@@ -28,6 +28,7 @@ Color ray_color(const Ray& r)
 int main() {
 
     // Image
+    auto aspect_ratio = 16.0 / 9.0;
     int image_width = 800;
     int image_height = 400;
 
