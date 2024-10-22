@@ -7,13 +7,6 @@
 #include <limits>
 #include <memory>
 
-
-// Common Headers
-
-#include "color.hpp"
-#include "ray.hpp"
-#include "vector3.hpp"
-
 // C++ Std Usings
 
 using std::shared_ptr;
@@ -30,3 +23,10 @@ inline double deg2rad(double degrees)
 {
     return degrees * pi / 180.0;
 }
+
+// Common Headers
+
+#include "color.hpp"
+#include "ray.hpp"
+#include "vector3.hpp"
+#include "interval.hpp"

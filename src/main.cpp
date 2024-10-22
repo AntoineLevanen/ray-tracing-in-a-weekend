@@ -1,38 +1,20 @@
-#include <iostream>
 #include <fstream>
 
-#include "color.hpp"
-#include "vector3.hpp"
-#include "ray.hpp"
+#include "rtweekend.hpp"
+#include "hittable.hpp"
+#include "hittable_list.hpp"
+#include "sphere.hpp"
 
-double hit_sphere(const Point3& center, double radius, const Ray& r)
+Color ray_color(const Ray& ray, const Hittable &world)
 {
-    Vector3 oc = center - r.origin();
-    double a = r.direction().length_squared();
-    double h = dot(r.direction(), oc);
-    double c = oc.length_squared() - radius * radius;
-    double discriminant = h*h - a*c;
-    
-    if (discriminant < 0)
-    {
-        return -1.0;
-    }
-    else
-    {
-        return (h - std::sqrt(discriminant)) / a;
-    }
-}
-
-Color ray_color(const Ray& r)
-{
-    double t = hit_sphere(Point3(0, 0, -1), 0.5, r);
-    if (t > 0.0)
-    {
-        Vector3 N = unit_vector(r.at(t) - Vector3(0, 0, -1));
-        return 0.5 * Color(N.x() + 1, N.y() + 1, N.z() + 1);
+    HitRecord record;
+    // Render the objects in the scene
+    if(world.hit(ray, Interval(0, infinity), record)){
+        return 0.5 * (record.normal + Color(1, 1, 1));
     }
 
-    Vector3 unit_direction = unit_vector(r.direction());
+    // Render the background
+    Vector3 unit_direction = unit_vector(ray.direction());
     double a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a * Color(0.5, 0.7, 1.0);
 }
@@ -43,6 +25,13 @@ int main() {
     auto aspect_ratio = 16.0 / 9.0;
     int image_width = 800;
     int image_height = 400;
+
+    // World
+
+    HittableList world;
+
+    world.add(make_shared<Sphere>(Point3(0, 0, -1), 0.5));
+    world.add(make_shared<Sphere>(Point3(0, -100.5, -1), 100));
 
     // Camera
     double focal_length = 1.0;
@@ -84,7 +73,7 @@ int main() {
             Ray r(camera_center, ray_direction);
 
 
-            Color pixel_color = ray_color(r);
+            Color pixel_color = ray_color(r, world);
  
             // Write RGB values to the PPM file
             write_color(ppmFile, pixel_color);
