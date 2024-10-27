@@ -8,8 +8,9 @@ class Camera
 {
   public:
     // Image
-    int image_width = 800;
-    int image_height = 400;
+    int image_width = 800; // Render image width in pixel count
+    int image_height = 400; // Render image height in pixel count
+    int sample_per_pixel = 10; // Count of random sample for each pixel
 
     void render(std::ofstream &ppmFile, const Hittable &world)
     {
@@ -29,15 +30,15 @@ class Camera
           
           for (int i = 0; i < image_width; i++) 
           {
-              Vector3 pixel_center = pixel00_location + (i * pixel_delta_u) + (j * pixel_delta_v);
-              Vector3 ray_direction = pixel_center - camera_center;
-              Ray ray(camera_center, ray_direction);
-
-
-              Color pixel_color = rayColor(ray, world);
-  
-              // Write RGB values to the PPM file
-              write_color(ppmFile, pixel_color);
+            Color pixel_color(0, 0, 0);
+            for (int sample = 0; sample < sample_per_pixel; sample++)
+            {
+              Ray ray = getRay(i, j);
+              pixel_color += rayColor(ray, world);
+            }
+            
+            // Write RGB values to the PPM file
+            write_color(ppmFile, pixel_sample_scale * pixel_color);
           }
           // End the line here
           ppmFile << std::endl;
@@ -50,6 +51,7 @@ class Camera
     }
 
   private:
+    double pixel_sample_scale; // Color scale factor for a sum of pixel samples
     Point3 camera_center;     // Camera center
     Point3 pixel00_location;  // Location of pixel 0, 0
     Vector3 pixel_delta_u;    // Offset to pixel to the right
@@ -57,6 +59,10 @@ class Camera
 
     void initialize()
     {
+      
+      // Compute the pixel sample scale from the sample per pixel value.
+      pixel_sample_scale = 1.0 / sample_per_pixel;
+
       // Camera
       double focal_length = 1.0;
       double viewport_height = 2.0;
@@ -75,6 +81,26 @@ class Camera
       Vector3 viewport_upper_left = camera_center - Vector3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
       pixel00_location = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
+    }
+
+    Ray getRay(int i, int j) const
+    {
+      // Construct a camera ray originating from the origin and directed at randomly sampled
+      // Point around the pixel location i, j.
+
+      Vector3 offset = sampleSquare();
+      Vector3 pixel_sample = pixel00_location + ((i + offset.x()) * pixel_delta_u) + ((j + offset.y()) * pixel_delta_v);
+
+      Point3 ray_origin = camera_center;
+      Vector3 ray_direction = pixel_sample - ray_origin;
+
+      return Ray(ray_origin, ray_direction);
+    }
+
+    Vector3 sampleSquare() const
+    {
+      // Returns the vector to a random point in the [-0.5, -0.5]-[0.5, 0.5] unit square.
+      return Vector3(randomDouble() - 0.5, randomDouble() - 0.5, 0);
     }
 
     Color rayColor(const Ray &ray, const Hittable &world) const

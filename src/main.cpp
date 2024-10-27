@@ -22,8 +22,9 @@ int main() {
     // Create a PPM image file
     std::ofstream ppmFile("../render/output.ppm");
 
-    camera.image_width = 800;
-    camera.image_height = 400;
+    camera.image_width = 400;
+    camera.image_height = 200;
+    camera.sample_per_pixel = 100;
 
     camera.render(ppmFile, world);
 
