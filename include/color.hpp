@@ -2,6 +2,7 @@
 
 #include <fstream>
 
+#include "interval.hpp"
 #include "vector3.hpp"
 
 using Color = Vector3;
@@ -35,9 +36,10 @@ void write_color(std::ofstream& out, const Color& pixel_color)
     double b = pixel_color.z();
 
     // Map the [0, 1] component values to byte range [0, 255]
-    int rbyte = int(255.999 * r);
-    int gbyte = int(255.999 * g);
-    int bbyte = int(255.999 * b);
+    static const Interval intensity(0.000, 0.999);
+    int rbyte = int(256 * intensity.clamp(r));
+    int gbyte = int(256 * intensity.clamp(g));
+    int bbyte = int(256 * intensity.clamp(b));
 
     // Write out the pixel color components
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
