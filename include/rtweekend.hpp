@@ -15,14 +15,14 @@ using std::make_shared;
 
 // Constants
 
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
+constexpr double infinity = std::numeric_limits<double>::infinity();
+constexpr double PI = 3.1415926535897932385; // So the compiler can optimize the variable
 
 // Utility Functions
 
 inline double deg2rad(double degrees)
 {
-    return degrees * pi / 180.0;
+    return degrees * PI / 180.0;
 }
 
 inline double randomDouble()

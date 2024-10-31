@@ -46,6 +46,16 @@ class Vector3
   {
     return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
   }
+
+  static Vector3 random()
+  {
+    return Vector3(randomDouble(), randomDouble(), randomDouble());
+  }
+
+  static Vector3 random(double min, double max)
+  {
+    return Vector3(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));
+  }
 };
 
 using Point3 = Vector3;
@@ -97,4 +107,37 @@ inline Vector3 cross(const Vector3& u, const Vector3& v)
 inline Vector3 unit_vector(const Vector3& v)
 {
   return v / v.lenght();
+}
+
+inline Vector3 randomUnitVector()
+{
+  // Find a good vector candidate.
+  // Only have MAX_ITER try before giving up to avoid being stuck here.
+  int nb_iter = 0;
+  int MAX_ITER = 250;
+  while(nb_iter <= MAX_ITER)
+  {
+    nb_iter++;
+
+    Vector3 random_vector_candidate = Vector3::random(-1, 1);
+    double candidate_length_squared = random_vector_candidate.length_squared();
+    if (1e-160 < candidate_length_squared && candidate_length_squared <= 1.0)
+    {
+      return random_vector_candidate / sqrt(candidate_length_squared);
+    }
+  }
+  return Vector3(0.0, 0.0, 0.0);
+}
+
+inline Vector3 randomOnHemisphere(const Vector3& normal)
+{
+  Vector3 on_unit_sphere = randomUnitVector();
+  if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
+  {
+    return on_unit_sphere;
+  }
+  else
+  {
+    return -on_unit_sphere;
+  }
 }

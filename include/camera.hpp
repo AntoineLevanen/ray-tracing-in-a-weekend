@@ -11,15 +11,16 @@ class Camera
     int image_width = 800; // Render image width in pixel count
     int image_height = 400; // Render image height in pixel count
     int sample_per_pixel = 10; // Count of random sample for each pixel
+    int max_depth = 10; //Maximum number of ray bounces into scene
 
-    void render(std::ofstream &ppmFile, const Hittable &world)
+    void render(std::ofstream &render_image, const Hittable &world)
     {
       initialize();
 
       // Write the PPM header
-      ppmFile << "P3" << std::endl;
-      ppmFile << image_width << " " << image_height << std::endl;
-      ppmFile << "255" << std::endl;
+      render_image << "P3" << std::endl;
+      render_image << image_width << " " << image_height << std::endl;
+      render_image << "255" << std::endl;
 
       for (int j = 0; j < image_height; j++) 
       {
@@ -34,18 +35,18 @@ class Camera
             for (int sample = 0; sample < sample_per_pixel; sample++)
             {
               Ray ray = getRay(i, j);
-              pixel_color += rayColor(ray, world);
+              pixel_color += rayColor(ray, max_depth, world);
             }
             
             // Write RGB values to the PPM file
-            write_color(ppmFile, pixel_sample_scale * pixel_color);
+            write_color(render_image, pixel_sample_scale * pixel_color);
           }
           // End the line here
-          ppmFile << std::endl;
+          render_image << std::endl;
       }
 
       // Close the PPM file
-      ppmFile.close();
+      render_image.close();
 
       std::clog << "\rDone.                 \n";
     }
@@ -103,13 +104,21 @@ class Camera
       return Vector3(randomDouble() - 0.5, randomDouble() - 0.5, 0);
     }
 
-    Color rayColor(const Ray &ray, const Hittable &world) const
+    Color rayColor(const Ray &ray, int depth, const Hittable &world) const
     {
+      // If we have exceeded the ray bounce imit, no more is gathered.
+      if (depth <= 0)
+      {
+        return Color(0, 0, 0);
+      }
+
       HitRecord record;
       // Render the objects in the scene
-      if(world.hit(ray, Interval(0, infinity), record))
+      // Ignore hits that are very close to the calculated intersection point.
+      if(world.hit(ray, Interval(0.001, infinity), record))
       {
-          return 0.5 * (record.normal + Color(1.0, 1.0, 1.0));
+        Vector3 direction = record.normal + randomUnitVector();
+        return 0.5 * rayColor(Ray(record.p, direction), depth-1, world);
       }
 
       // Render the background

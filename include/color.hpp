@@ -7,23 +7,38 @@
 
 using Color = Vector3;
 
+inline double lineraToGamma(double linear_component)
+{
+  if (linear_component > 0)
+  {
+    return std::sqrt(linear_component);
+  }
+  return 0.0;
+}
+
 /**
  * write_color function to push the image to standard output, 
  * usefull if the output is redirected to a file.
  */
 void write_color(std::ostream& out, const Color& pixel_color)
 {
-    double r = pixel_color.x();
-    double g = pixel_color.y();
-    double b = pixel_color.z();
+  double r = pixel_color.x();
+  double g = pixel_color.y();
+  double b = pixel_color.z();
 
-    // Map the [0, 1] component values to byte range [0, 255]
-    int rbyte = int(255.999 * r);
-    int gbyte = int(255.999 * g);
-    int bbyte = int(255.999 * b);
+  // Apply a linear to gamma transform for gamma 2
+  r = lineraToGamma(r);
+  g = lineraToGamma(g);
+  b = lineraToGamma(b);
 
-    // Write out the pixel color components
-    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+  // Map the [0, 1] component values to byte range [0, 255]
+  static const Interval intensity(0.000, 0.999);
+  int rbyte = int(256 * intensity.clamp(r));
+  int gbyte = int(256 * intensity.clamp(g));
+  int bbyte = int(256 * intensity.clamp(b));
+
+  // Write out the pixel color components
+  out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }
 
 /**
@@ -31,16 +46,21 @@ void write_color(std::ostream& out, const Color& pixel_color)
  */
 void write_color(std::ofstream& out, const Color& pixel_color)
 {
-    double r = pixel_color.x();
-    double g = pixel_color.y();
-    double b = pixel_color.z();
+  double r = pixel_color.x();
+  double g = pixel_color.y();
+  double b = pixel_color.z();
 
-    // Map the [0, 1] component values to byte range [0, 255]
-    static const Interval intensity(0.000, 0.999);
-    int rbyte = int(256 * intensity.clamp(r));
-    int gbyte = int(256 * intensity.clamp(g));
-    int bbyte = int(256 * intensity.clamp(b));
+  // Apply a linear to gamma transform for gamma 2
+  r = lineraToGamma(r);
+  g = lineraToGamma(g);
+  b = lineraToGamma(b);
 
-    // Write out the pixel color components
-    out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
+  // Map the [0, 1] component values to byte range [0, 255]
+  static const Interval intensity(0.000, 0.999);
+  int rbyte = int(256 * intensity.clamp(r));
+  int gbyte = int(256 * intensity.clamp(g));
+  int bbyte = int(256 * intensity.clamp(b));
+
+  // Write out the pixel color components
+  out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
 }

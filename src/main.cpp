@@ -20,13 +20,14 @@ int main() {
 
     Camera camera;
     // Create a PPM image file
-    std::ofstream ppmFile("../render/output.ppm");
+    std::ofstream render_image("../render/output.ppm");
 
     camera.image_width = 400;
     camera.image_height = 200;
     camera.sample_per_pixel = 100;
+    camera.max_depth = 50;
 
-    camera.render(ppmFile, world);
+    camera.render(render_image, world);
 
     return 0;
 }
