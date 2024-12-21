@@ -1,10 +1,13 @@
 #pragma once
 
+class Material; // Define the Material class here to avoid circular reference issue.
+
 class HitRecord
 {
   public:
-    Point3 p;
+    Point3 hit_impact;
     Vector3 normal;
+    shared_ptr<Material> material;
     double t;
     bool front_face;
 

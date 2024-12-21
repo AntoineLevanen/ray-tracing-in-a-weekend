@@ -47,6 +47,13 @@ class Vector3
     return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
   }
 
+  bool nearZero() const
+  {
+    // Return true if the vector is close to zero in all dimentions.
+    double s = 1e-8;
+    return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+  }
+
   static Vector3 random()
   {
     return Vector3(randomDouble(), randomDouble(), randomDouble());
@@ -73,6 +80,11 @@ inline Vector3 operator+(const Vector3 u, const Vector3 v)
 inline Vector3 operator-(const Vector3 u, const Vector3 v)
 {
   return Vector3(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
+}
+
+inline Vector3 operator*(const Vector3& u, const Vector3& v)
+{
+  return Vector3(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
 }
 
 inline Vector3 operator*(double t, const Vector3 v)
@@ -140,4 +152,9 @@ inline Vector3 randomOnHemisphere(const Vector3& normal)
   {
     return -on_unit_sphere;
   }
+}
+
+inline Vector3 reflect(const Vector3& incoming_ray, const Vector3& normal)
+{
+  return incoming_ray - 2 * dot(incoming_ray, normal) * normal;
 }
