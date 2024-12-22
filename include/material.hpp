@@ -55,3 +55,48 @@ class Metal : public Material
       return (dot(scattered.direction(), record.normal) > 0);
     }
 };
+
+class Dielectric : public Material
+{
+  public:
+    Dielectric(double refraction_index) : refraction_index(refraction_index){}
+
+    bool scatter(const Ray& ray_in, const HitRecord& record, Color& attenuation, Ray& scattered) const override 
+    {
+      attenuation = Color(1.0, 1.0, 1.0);
+      double refraction_index = record.front_face ? (1.0 / refraction_index) : refraction_index;
+
+      Vector3 unit_direction = unit_vector(ray_in.direction());
+      double cos_theta = std::fmin(dot(-unit_direction, record.normal), 1.0);
+      double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+
+      bool cannot_refract = refraction_index * sin_theta > 1.0;
+      
+      Vector3 direction;
+
+      if(cannot_refract || refectance(cos_theta, refraction_index) > randomDouble())
+      {
+        direction = reflect(unit_direction, record.normal);
+      }
+      else
+      {
+        direction =  refract(unit_direction, record.normal, refraction_index);
+      }
+
+      scattered = Ray(record.hit_impact, direction);
+      return true;
+    }
+  
+  private:
+    // The refractive index in vaccum or air, or the ratio of the material's refractive index over
+    // the refractive index of the enclosing media
+    double refraction_index;
+
+    static double refectance(double cosine, double refraction_index)
+    {
+      // Use Schlick's approximation for reflectance.
+      auto r0 = (1 - refraction_index) / (1 + refraction_index);
+      r0 = r0 * r0;
+      return r0 + (1 - r0) * std::pow((1 - cosine), 5.0);
+    }
+};
