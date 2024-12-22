@@ -158,3 +158,12 @@ inline Vector3 reflect(const Vector3& incoming_ray, const Vector3& normal)
 {
   return incoming_ray - 2 * dot(incoming_ray, normal) * normal;
 }
+
+inline Vector3 refract(const Vector3& uv, const Vector3& n, double etai_over_etat)
+{
+  auto cos_theta = std::fmin(dot(-uv, n), 1.0);
+  Vector3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
+  Vector3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+  return r_out_perp + r_out_parallel;
+}
+
