@@ -154,6 +154,19 @@ inline Vector3 randomOnHemisphere(const Vector3& normal)
   }
 }
 
+inline Vector3 randomInUnitDisk()
+{
+  // TODO add a counter to clamp the max iteration number on the while(true)
+  while(true)
+  {
+    auto p = Vector3(randomDouble(-1, 1), randomDouble(-1, 1), 0.0);
+    if(p.length_squared() < 1)
+    {
+      return p;
+    }
+  }
+}
+
 inline Vector3 reflect(const Vector3& incoming_ray, const Vector3& normal)
 {
   return incoming_ray - 2 * dot(incoming_ray, normal) * normal;

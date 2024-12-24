@@ -40,6 +40,9 @@ int main() {
     camera.look_at = Point3(0, 0, -1);
     camera.view_up = Vector3(0, 1, 0);
 
+    camera.defocus_angle = 10.0;
+    camera.focus_distance = 3.4;
+
     camera.render(render_image, world);
 
     return 0;
