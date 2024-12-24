@@ -35,6 +35,11 @@ int main() {
     camera.sample_per_pixel = 50;
     camera.max_depth = 50;
 
+    camera.vertical_field_of_view = 20;
+    camera.look_from = Point3(-2, 2, 1);
+    camera.look_at = Point3(0, 0, -1);
+    camera.view_up = Vector3(0, 1, 0);
+
     camera.render(render_image, world);
 
     return 0;
