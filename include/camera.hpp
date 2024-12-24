@@ -14,6 +14,8 @@ class Camera
     int sample_per_pixel = 10; // Count of random sample for each pixel
     int max_depth = 10; //Maximum number of ray bounces into scene
 
+    double vertical_field_of_view = 90; // Vertical view angle (FOV)
+
     void render(std::ofstream &render_image, const Hittable &world)
     {
       initialize();
@@ -61,13 +63,14 @@ class Camera
 
     void initialize()
     {
-      
       // Compute the pixel sample scale from the sample per pixel value.
       pixel_sample_scale = 1.0 / sample_per_pixel;
 
       // Camera
       double focal_length = 1.0;
-      double viewport_height = 2.0;
+      double theta = deg2rad(vertical_field_of_view);
+      double h = std::tan(theta / 2);
+      double viewport_height = 2 * h * focal_length;
       double viewport_width = viewport_height * (double(image_width)/image_height);
       camera_center = Point3(0, 0, 0);
 
