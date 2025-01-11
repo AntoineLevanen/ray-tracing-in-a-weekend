@@ -38,6 +38,7 @@ class Camera
               << (image_height - j) 
               << ' ' << std::flush;
           
+          if(j > 517){
           for (int i = 0; i < image_width; i++) 
           {
             Color pixel_color(0, 0, 0);
@@ -49,6 +50,7 @@ class Camera
             
             // Write RGB values to the PPM file
             write_color(render_image, pixel_sample_scale * pixel_color);
+          }
           }
           // End the line here
           render_image << std::endl;

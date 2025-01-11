@@ -37,7 +37,7 @@ class Vector3
     return *this *= 1/t;
   }
 
-  double lenght() const 
+  double length() const 
   {
     return std::sqrt(length_squared());
   }
@@ -118,7 +118,7 @@ inline Vector3 cross(const Vector3& u, const Vector3& v)
 
 inline Vector3 unit_vector(const Vector3& v)
 {
-  return v / v.lenght();
+  return v / v.length();
 }
 
 inline Vector3 randomUnitVector()
