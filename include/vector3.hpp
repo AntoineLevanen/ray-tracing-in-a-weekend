@@ -37,7 +37,7 @@ class Vector3
     return *this *= 1/t;
   }
 
-  double lenght() const 
+  double length() const 
   {
     return std::sqrt(length_squared());
   }
@@ -118,7 +118,7 @@ inline Vector3 cross(const Vector3& u, const Vector3& v)
 
 inline Vector3 unit_vector(const Vector3& v)
 {
-  return v / v.lenght();
+  return v / v.length();
 }
 
 inline Vector3 randomUnitVector()
@@ -151,6 +151,19 @@ inline Vector3 randomOnHemisphere(const Vector3& normal)
   else
   {
     return -on_unit_sphere;
+  }
+}
+
+inline Vector3 randomInUnitDisk()
+{
+  // TODO add a counter to clamp the max iteration number on the while(true)
+  while(true)
+  {
+    auto p = Vector3(randomDouble(-1, 1), randomDouble(-1, 1), 0.0);
+    if(p.length_squared() < 1)
+    {
+      return p;
+    }
   }
 }
 
