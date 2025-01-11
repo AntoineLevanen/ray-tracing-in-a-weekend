@@ -119,7 +119,10 @@ class Camera
       Point3 ray_origin = (defocus_angle <= 0) ? camera_center : defocusDiskSample();
       Vector3 ray_direction = pixel_sample - ray_origin;
 
-      return Ray(ray_origin, ray_direction);
+      // Sample the scene at random time [0;1]
+      double ray_time = randomDouble();
+
+      return Ray(ray_origin, ray_direction, ray_time);
     }
 
     Vector3 sampleSquare() const
