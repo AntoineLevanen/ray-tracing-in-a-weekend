@@ -33,27 +33,24 @@ class Camera
 
       for (int j = 0; j < image_height; j++) 
       {
-          std::clog 
-              << "\rScanlines remaining: " 
-              << (image_height - j) 
-              << ' ' << std::flush;
-          
-          if(j > 517){
-          for (int i = 0; i < image_width; i++) 
+        std::clog 
+            << "\rScanlines remaining: " 
+            << (image_height - j) 
+            << ' ' << std::flush;
+        for (int i = 0; i < image_width; i++) 
+        {
+          Color pixel_color(0, 0, 0);
+          for (int sample = 0; sample < sample_per_pixel; sample++)
           {
-            Color pixel_color(0, 0, 0);
-            for (int sample = 0; sample < sample_per_pixel; sample++)
-            {
-              Ray ray = getRay(i, j);
-              pixel_color += rayColor(ray, max_depth, world);
-            }
-            
-            // Write RGB values to the PPM file
-            write_color(render_image, pixel_sample_scale * pixel_color);
+            Ray ray = getRay(i, j);
+            pixel_color += rayColor(ray, max_depth, world);
           }
-          }
-          // End the line here
-          render_image << std::endl;
+          
+          // Write RGB values to the PPM file
+          write_color(render_image, pixel_sample_scale * pixel_color);
+        }
+        // End the line here
+        render_image << std::endl;
       }
 
       // Close the PPM file
