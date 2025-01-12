@@ -33,7 +33,8 @@ int main() {
           // diffuse
           auto albedo = Color::random() * Color::random();
           sphere_material = make_shared<Lambertian>(albedo);
-          world.add(make_shared<Sphere>(center, 0.2, sphere_material));
+          Vector3 center2 = center + Vector3(0, randomDouble(0.0, 0.5), 0);
+          world.add(make_shared<Sphere>(center, center2, 0.2, sphere_material));
         }
         else if(choose_mat < 0.95)
         {
@@ -64,11 +65,11 @@ int main() {
 
   Camera camera;
   // Create a PPM image file
-  std::ofstream render_image("../render/book_1_final_render_02.ppm");
+  std::ofstream render_image("../render/book_2.ppm");
 
-  camera.image_width = 1600;
-  camera.image_height = 900;
-  camera.sample_per_pixel = 500;
+  camera.image_width = 400;
+  camera.image_height = 200;
+  camera.sample_per_pixel = 100;
   camera.max_depth = 50;
 
   camera.vertical_field_of_view = 20;

@@ -32,7 +32,7 @@ public:
       scatter_direction = record.normal;
     }
 
-    scattered = Ray(record.hit_impact, scatter_direction);
+    scattered = Ray(record.hit_impact, scatter_direction, ray_in.time());
     attenuation = albedo;
     return true;
   }
@@ -50,7 +50,7 @@ class Metal : public Material
     {
       Vector3 reflected = reflect(ray_in.direction(), record.normal);
       reflected = unit_vector(reflected) + (fuzz * randomUnitVector());
-      scattered = Ray(record.hit_impact, reflected);
+      scattered = Ray(record.hit_impact, reflected, ray_in.time());
       attenuation = albedo;
       return (dot(scattered.direction(), record.normal) > 0);
     }
@@ -83,7 +83,7 @@ class Dielectric : public Material
         direction =  refract(unit_direction, record.normal, ri);
       }
 
-      scattered = Ray(record.hit_impact, direction);
+      scattered = Ray(record.hit_impact, direction, ray_in.time());
       return true;
     }
   
