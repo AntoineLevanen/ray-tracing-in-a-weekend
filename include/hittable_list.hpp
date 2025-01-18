@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "aabb.hpp"
 #include "hittable.hpp"
 
 class HittableList : public Hittable
@@ -17,6 +18,7 @@ class HittableList : public Hittable
     void add(shared_ptr<Hittable> object)
     {
       objects.push_back(object);
+      bbox = AABB(bbox, object->boundingBox());
     }
 
     bool hit(const Ray &ray, Interval ray_t, HitRecord &record) const override
@@ -36,4 +38,12 @@ class HittableList : public Hittable
       }
       return hit_anything;
     }
+
+    AABB boundingBox() const override
+    {
+      return bbox;
+    }
+
+  private:
+    AABB bbox;
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "aabb.hpp"
+
 class Material; // Define the Material class here to avoid circular reference issue.
 
 class HitRecord
@@ -26,4 +28,6 @@ class Hittable
   public:
     virtual ~Hittable() = default;
     virtual bool hit(const Ray &ray, Interval ray_t, HitRecord &record) const = 0;
+
+    virtual AABB boundingBox() const = 0;
 };

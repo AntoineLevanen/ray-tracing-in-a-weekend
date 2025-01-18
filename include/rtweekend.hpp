@@ -22,19 +22,25 @@ constexpr double PI = 3.1415926535897932385; // So the compiler can optimize the
 
 inline double deg2rad(double degrees)
 {
-    return degrees * PI / 180.0;
+  return degrees * PI / 180.0;
 }
 
 inline double randomDouble()
 {
-    // Return a random real in [0, 1).
-    return std::rand() / (RAND_MAX + 1.0);
+  // Return a random real in [0, 1).
+  return std::rand() / (RAND_MAX + 1.0);
 }
 
 inline double randomDouble(double min, double max)
 {
-    // Return a random real in [min, max).
-    return min + (max - min) * randomDouble();
+  // Return a random real in [min, max).
+  return min + (max - min) * randomDouble();
+}
+
+inline int randomInt(int min, int max)
+{
+  // Returns a random integer in [min, max].
+  return int(randomDouble(min, max + 1));
 }
 
 // Common Headers

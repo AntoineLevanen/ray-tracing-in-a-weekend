@@ -2,6 +2,7 @@
 
 #include "rtweekend.hpp"
 
+#include "bvh.hpp"
 #include "camera.hpp"
 #include "hittable.hpp"
 #include "hittable_list.hpp"
@@ -63,12 +64,14 @@ int main() {
   auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
   world.add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
+  world = HittableList(make_shared<BVHNode>(world));
+
   Camera camera;
   // Create a PPM image file
   std::ofstream render_image("../render/book_2.ppm");
 
-  camera.image_width = 400;
-  camera.image_height = 200;
+  camera.image_width = 1600;
+  camera.image_height = 800;
   camera.sample_per_pixel = 100;
   camera.max_depth = 50;
 
