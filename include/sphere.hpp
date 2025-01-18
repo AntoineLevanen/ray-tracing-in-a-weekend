@@ -7,11 +7,21 @@ class Sphere : public Hittable
   public:
     // Stationary Sphere
     Sphere(const Point3 &static_center, double radius, shared_ptr<Material> material) 
-      : center(static_center, Vector3(0,0,0)), radius(std::fmax(0, radius)) , material(material) {}
+      : center(static_center, Vector3(0,0,0)), radius(std::fmax(0, radius)) , material(material) 
+    {
+      auto rvec = Vector3(radius, radius, radius);
+      bbox = AABB(static_center - rvec, static_center + rvec);
+    }
 
     // Stationary Sphere
     Sphere(const Point3 &center1, const Point3 &center2, double radius, shared_ptr<Material> material) 
-      : center(center1, center2 - center1), radius(std::fmax(0, radius)) , material(material) {}
+      : center(center1, center2 - center1), radius(std::fmax(0, radius)) , material(material)
+    {
+      auto rvec = Vector3(radius, radius, radius);
+      AABB box1(center.at(0) - rvec, center.at(0) + rvec);
+      AABB box2(center.at(1) - rvec, center.at(1) + rvec);
+      bbox = AABB(box1, box2);
+    }
 
     bool hit(const Ray &ray, Interval ray_t, HitRecord &record) const override 
     {
@@ -48,9 +58,15 @@ class Sphere : public Hittable
 
       return true;
     }
+
+    AABB boundingBox() const override
+    {
+      return bbox;
+    }
   
   private:
     Ray center;
     double radius;
     shared_ptr<Material> material;
+    AABB bbox;
 };
