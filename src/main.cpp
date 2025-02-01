@@ -116,11 +116,36 @@ void checkeredSpheres()
   camera.render(render_image, world);
 }
 
+void earth()
+{
+  auto earth_texture = make_shared<ImageTexture>("earthmap.jpg");
+  auto earth_surface = make_shared<Lambertian>(earth_texture);
+  auto globe = make_shared<Sphere>(Point3(0, 0, 0), 2, earth_surface);
+
+  Camera camera;
+  // Create a PPM image file
+  std::ofstream render_image("../render/earth_render.ppm");
+
+  camera.image_height = 400;
+  camera.image_width = 800;
+  camera.sample_per_pixel = 10;
+  camera.max_depth = 50;
+
+  camera.vertical_field_of_view = 20;
+  camera.look_from = Point3(0, 0, 12);
+  camera.look_at = Point3(0, 0, 0);
+  camera.view_up = Vector3(0, 1, 0);
+
+  camera.defocus_angle = 0;
+  camera.render(render_image, HittableList(globe));
+}
+
 int main()
 {
-  switch (2)
+  switch (3)
   {
-  case 1: bouncingSpheres(); break;
-  case 2: checkeredSpheres(); break;
+    case 1: bouncingSpheres(); break;
+    case 2: checkeredSpheres(); break;
+    case 3: earth(); break;
   }
 }
