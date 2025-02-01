@@ -11,6 +11,8 @@ class HitRecord
     Vector3 normal;
     shared_ptr<Material> material;
     double t;
+    double u;
+    double v;
     bool front_face;
 
     void setFaceNormal(const Ray &ray, const Vector3 &outward_normal)

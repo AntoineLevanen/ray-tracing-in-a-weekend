@@ -8,15 +8,18 @@
 #include "hittable_list.hpp"
 #include "material.hpp"
 #include "sphere.hpp"
+#include "texture.h"
 
-int main() {
-
+void bouncingSpheres() 
+{
   // World
 
   HittableList world;
 
   auto material_ground = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-  world.add(make_shared<Sphere>(Point3(0.0, -1000, 0.0), 1000, material_ground));
+  auto checker_texture = make_shared<CheckerTexture>(0.32, Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
+  auto material_checker = make_shared<Lambertian>(checker_texture);
+  world.add(make_shared<Sphere>(Point3(0.0, -1000, 0.0), 1000, material_checker));
 
   for(int a = -11; a < 11; a++)
   {
@@ -68,7 +71,7 @@ int main() {
 
   Camera camera;
   // Create a PPM image file
-  std::ofstream render_image("../render/book_2.ppm");
+  std::ofstream render_image("../render/checker_texture.ppm");
 
   camera.image_width = 1600;
   camera.image_height = 800;
@@ -84,6 +87,65 @@ int main() {
   camera.focus_distance = 10.0;
 
   camera.render(render_image, world);
+}
 
-  return 0;
+void checkeredSpheres()
+{
+  HittableList world;
+
+  auto checker = make_shared<CheckerTexture>(0.32, Color(0.2, 0.3, 0.1), Color(0.9, 0.9, 0.9));
+
+  world.add(make_shared<Sphere>(Point3(0, -10, 0), 10, make_shared<Lambertian>(checker)));
+  world.add(make_shared<Sphere>(Point3(0, 10, 0), 10, make_shared<Lambertian>(checker)));
+
+  Camera camera;
+  // Create a PPM image file
+  std::ofstream render_image("../render/checker_texture.ppm");
+
+  camera.image_height = 400;
+  camera.image_width = 800;
+  camera.sample_per_pixel = 100;
+  camera.max_depth = 50;
+
+  camera.vertical_field_of_view = 20;
+  camera.look_from = Point3(13, 2, 3);
+  camera.look_at = Point3(0, 0, 0);
+  camera.view_up = Vector3(0, 1, 0);
+
+  camera.defocus_angle = 0;
+  camera.render(render_image, world);
+}
+
+void earth()
+{
+  auto earth_texture = make_shared<ImageTexture>("earthmap.jpg");
+  auto earth_surface = make_shared<Lambertian>(earth_texture);
+  auto globe = make_shared<Sphere>(Point3(0, 0, 0), 2, earth_surface);
+
+  Camera camera;
+  // Create a PPM image file
+  std::ofstream render_image("../render/earth_render.ppm");
+
+  camera.image_height = 400;
+  camera.image_width = 800;
+  camera.sample_per_pixel = 10;
+  camera.max_depth = 50;
+
+  camera.vertical_field_of_view = 20;
+  camera.look_from = Point3(0, 0, 12);
+  camera.look_at = Point3(0, 0, 0);
+  camera.view_up = Vector3(0, 1, 0);
+
+  camera.defocus_angle = 0;
+  camera.render(render_image, HittableList(globe));
+}
+
+int main()
+{
+  switch (3)
+  {
+    case 1: bouncingSpheres(); break;
+    case 2: checkeredSpheres(); break;
+    case 3: earth(); break;
+  }
 }

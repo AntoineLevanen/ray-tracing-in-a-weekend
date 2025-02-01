@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hittable.hpp"
+#include "texture.h"
 #include "rtweekend.hpp"
 
 class Material
@@ -17,10 +18,11 @@ class Material
 class Lambertian : public Material
 {
 private:
-  Color albedo;
+  shared_ptr<Texture> texture;
 
 public:
-  Lambertian(const Color& albedo) : albedo(albedo){};
+  Lambertian(const Color& albedo) : texture(make_shared<SolidColor>(albedo)){};
+  Lambertian(shared_ptr<Texture> texture) : texture(texture) {}
 
   bool scatter(const Ray& ray_in, const HitRecord& record, Color& attenuation, Ray& scattered) const override
   {
@@ -33,7 +35,7 @@ public:
     }
 
     scattered = Ray(record.hit_impact, scatter_direction, ray_in.time());
-    attenuation = albedo;
+    attenuation = texture->value(record.u, record.v, record.hit_impact);
     return true;
   }
 };

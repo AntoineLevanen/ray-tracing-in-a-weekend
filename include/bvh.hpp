@@ -98,9 +98,3 @@ class BVHNode : public Hittable
       return boxCompare(a, b, 2);
     }
 };
-
-/*
-******************************
-3.10
-******************************
-*/
