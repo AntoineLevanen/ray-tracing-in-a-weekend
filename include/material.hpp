@@ -1,7 +1,7 @@
 #pragma once
 
 #include "hittable.hpp"
-#include "texture.h"
+#include "texture.hpp"
 #include "rtweekend.hpp"
 
 class Material
