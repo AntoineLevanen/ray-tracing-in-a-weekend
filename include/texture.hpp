@@ -1,5 +1,6 @@
 #pragma once
 
+#include "perlin.hpp"
 #include "rtw_stb_image.h"
 
 class Texture
@@ -76,4 +77,19 @@ class ImageTexture : public Texture
 
   private:
     RTWImage image;
+};
+
+class NoiseTexture : public Texture
+{
+  public:
+    NoiseTexture(double scale) : scale(scale) {}
+
+    Color value(double u, double v, const Point3& point) const override
+    {
+      return Color(0.5, 0.5, 0.5) * (1 + std::sin(scale * point.z() + 10 * noise.turbulence(point, 7)));
+    }
+  
+  private:
+    Perlin noise;
+    double scale;
 };
