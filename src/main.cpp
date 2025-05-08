@@ -8,7 +8,7 @@
 #include "hittable_list.hpp"
 #include "material.hpp"
 #include "sphere.hpp"
-#include "texture.h"
+#include "texture.hpp"
 
 void bouncingSpheres() 
 {
@@ -140,12 +140,38 @@ void earth()
   camera.render(render_image, HittableList(globe));
 }
 
+void perlinSphere()
+{
+  HittableList world;
+  auto perlin_texture = make_shared<NoiseTexture>(4);
+  world.add(make_shared<Sphere>(Point3(0, -1000, 0), 1000, make_shared<Lambertian>(perlin_texture)));
+  world.add(make_shared<Sphere>(Point3(0, 2, 0), 2, make_shared<Lambertian>(perlin_texture)));
+
+  Camera camera;
+  // Create a PPM image file
+  std::ofstream render_image("../render/perlin_noise.ppm");
+
+  camera.image_height = 200;
+  camera.image_width = 400;
+  camera.sample_per_pixel = 100;
+  camera.max_depth = 50;
+
+  camera.vertical_field_of_view = 20;
+  camera.look_from = Point3(13, 2, 3);
+  camera.look_at = Point3(0, 0, 0);
+  camera.view_up = Vector3(0, 1, 0);
+
+  camera.defocus_angle = 0;
+  camera.render(render_image, world);
+}
+
 int main()
 {
-  switch (3)
+  switch (4)
   {
     case 1: bouncingSpheres(); break;
     case 2: checkeredSpheres(); break;
     case 3: earth(); break;
+    case 4: perlinSphere(); break;
   }
 }

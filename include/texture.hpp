@@ -87,6 +87,7 @@ class NoiseTexture : public Texture
     Color value(double u, double v, const Point3& point) const override
     {
       return Color(0.5, 0.5, 0.5) * (1 + std::sin(scale * point.z() + 10 * noise.turbulence(point, 7)));
+      // return Color(0.5, 0.5, 0.5) * noise.turbulence(point, 7);
     }
   
   private:
