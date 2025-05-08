@@ -7,6 +7,7 @@
 #include "hittable.hpp"
 #include "hittable_list.hpp"
 #include "material.hpp"
+#include "quadrilaterals.hpp"
 #include "sphere.hpp"
 #include "texture.hpp"
 
@@ -165,13 +166,47 @@ void perlinSphere()
   camera.render(render_image, world);
 }
 
+void quads()
+{
+  HittableList world;
+  auto left_red = make_shared<Lambertian>(Color(1.0, 0.2, 0.2));
+  auto back_green = make_shared<Lambertian>(Color(0.2, 1.0, 0.2));
+  auto right_blue = make_shared<Lambertian>(Color(0.2, 0.2, 1.0));
+  auto upper_orange = make_shared<Lambertian>(Color(1.0, 0.5, 0.0));
+  auto lower_teal = make_shared<Lambertian>(Color(0.2, 0.8, 0.8));
+
+  world.add(make_shared<Quad>(Point3(-3, -2, 5), Vector3(0, 0, -4), Vector3(0, 4, 0), left_red));
+  world.add(make_shared<Quad>(Point3(-2, -2, 0), Vector3(4, 0, 0), Vector3(0, 4, 0), back_green));
+  world.add(make_shared<Quad>(Point3(3, -2, 1), Vector3(0, 0, 4), Vector3(0, 4, 0), right_blue));
+  world.add(make_shared<Quad>(Point3(-2, 3, 1), Vector3(4, 0, 0), Vector3(0, 0, 4), upper_orange));
+  world.add(make_shared<Quad>(Point3(-2, -3, 5), Vector3(4, 0, 0), Vector3(0, 0, -4), lower_teal));
+
+  Camera camera;
+  // Create a PPM image file
+  std::ofstream render_image("../render/quads.ppm");
+
+  camera.image_height = 400;
+  camera.image_width = 800;
+  camera.sample_per_pixel = 100;
+  camera.max_depth = 50;
+
+  camera.vertical_field_of_view = 80;
+  camera.look_from = Point3(0, 0, 9);
+  camera.look_at = Point3(0, 0, 0);
+  camera.view_up = Vector3(0, 1, 0);
+
+  camera.defocus_angle = 0;
+  camera.render(render_image, world);
+}
+
 int main()
 {
-  switch (4)
+  switch (5)
   {
     case 1: bouncingSpheres(); break;
     case 2: checkeredSpheres(); break;
     case 3: earth(); break;
     case 4: perlinSphere(); break;
+    case 5: quads(); break;
   }
 }

@@ -8,7 +8,10 @@ class AABB
     AABB() {} // The default AABB is empty, since intervals are empty by default.
 
     AABB(const Interval& x, const Interval& y, const Interval& z)
-      : x(x), y(y), z(z) {}
+      : x(x), y(y), z(z) 
+    {
+      padToMinimums();
+    }
 
     AABB(const Point3& a, const Point3& b)
     {
@@ -80,6 +83,17 @@ class AABB
     }
 
     static const AABB empty, universe;
+
+  private:
+    void padToMinimums()
+    {
+      // Adjust the AABB so that no side is narrower that some delta, padding if necessary.
+
+      double delta = 0.0001;
+      if(x.size() < delta) x = x.expand(delta);
+      if(y.size() < delta) y = y.expand(delta);
+      if(z.size() < delta) z = z.expand(delta);
+    }
 };
 
 const AABB AABB::empty = AABB(Interval::empty, Interval::empty, Interval::empty);
